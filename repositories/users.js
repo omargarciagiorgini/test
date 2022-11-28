@@ -1,8 +1,8 @@
-const  User = require('../db/models/user');
+const  models = require('../db/models/index');
 exports.getAllUsers = async () => {
     try {
-        const users = await User.findAll();
-        console.log(users.every(user => user instanceof User)); // true
+        console.log(models.User);
+        const users = await models.User.findAll();
         console.log("All users:", JSON.stringify(users, null, 2));
         return JSON.stringify(users, null, 2);
         
