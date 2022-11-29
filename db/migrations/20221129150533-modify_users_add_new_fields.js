@@ -50,6 +50,14 @@ module.exports = {
           allowNull: true,
         },
       ),
+      queryInterface.addColumn(
+        'Users',
+        'password',
+        {
+          type: Sequelize.TEXT,
+          allowNull: true,
+        },
+      ),
     ]);
   },
 
@@ -66,6 +74,7 @@ module.exports = {
       queryInterface.removeColumn('Users', 'ip'),
       queryInterface.removeColumn('Users', 'address'),
       queryInterface.removeColumn('Users', 'city'),
+      queryInterface.removeColumn('Users', 'password'),
 
     ]);
   }
