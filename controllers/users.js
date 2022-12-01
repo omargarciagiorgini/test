@@ -1,7 +1,9 @@
 const UserRepository = require('../repositories/users');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-exports.getAll = async () => {
-    return await UserRepository.getAllUsers();
+exports.getAll = async (req) => {
+    return await UserRepository.getAllUsers(req);
 }
 
 exports.register = async(userName , email , pass) => {
@@ -12,7 +14,13 @@ exports.login =  async(userName, pass) => {
     try {
         const userID = await UserRepository.getUserIDByUserName(userName);
         const res = await UserRepository.verifyPassword(userID, pass);
-        return [200,res?"logged":"user or pass incorrect"];
+            // create token
+        const token = jwt.sign({
+            name: userName,
+            id: userID
+        }, process.env.TOKEN_SECRET)
+        
+        return [200,res?"logged":"user or pass incorrect", token];
     } catch (error) {
         console.log('login error controller',error);
         return [500,'Error: {$error}'+error];

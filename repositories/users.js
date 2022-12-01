@@ -1,11 +1,12 @@
 const  models = require('../db/models/index');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { Op } = require("sequelize");
 
-exports.getAllUsers = async () => {
+
+exports.getAllUsers = async (req) => {
     try {
-        console.log(models.User);
-        const users = await models.User.findAll();
-        console.log("All users:", JSON.stringify(users, null, 2));
+        const params = req.query;
+        const users = await models.User.findAll({ where:{ [Op.or]: [ {first_name: params.first_name},{ city: params.city} ]}});
         return JSON.stringify(users, null, 2);
         
     } catch (error) {
@@ -21,7 +22,6 @@ exports.register = async (userName , email , pass) => {
                         email: email,
                         password: encryptedPass
                     }
-                    console.log('newUser: ',newUser);
     models.User.create(newUser).then(function(newUser){
         console.log(newUser.name); // John
         // John is now in your db!
