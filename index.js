@@ -1,5 +1,6 @@
 const express = require('express'); //Import the express dependency
 const UsersController = require('./controllers/users');
+const { validateGetUsers  }= require('./middlewares/validators');
 const verifyToken = require('./middlewares/auth');
 const app = express();
 const port = 5000;
@@ -12,7 +13,8 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.get('/users', verifyToken, async (req, res) => {
+app.use('/users', verifyToken, validateGetUsers);
+app.get('/users', async (req, res) => {
     const users = await  UsersController.getAll(req);
     res.send(200,users);
   })

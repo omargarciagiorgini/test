@@ -5,8 +5,14 @@ const { Op } = require("sequelize");
 
 exports.getAllUsers = async (req) => {
     try {
-        const params = req.query;
-        const users = await models.User.findAll({ where:{ [Op.or]: [ {first_name: params.first_name},{ city: params.city} ]}});
+        const { query } = req;
+        const opt = [];
+        Object.entries(query).forEach(([key, value]) => {
+            opt.push({[key]:value} );          
+        });
+        const users = await models.User.findAll({
+            attributes: {exclude: ['password']},order: [['id','DESC']],
+            where:{ [Op.or]: opt}});
         return JSON.stringify(users, null, 2);
         
     } catch (error) {
