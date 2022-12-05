@@ -30,13 +30,11 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/login', async(req, res) => {
-  const [status , msg, token] = await UsersController.login(req.body.userName, req.body.pass).catch((e)=> console.log(e));
+  const [status , token] = await UsersController.login(req.body.userName, req.body.pass).catch((e)=> console.log(e));
   res.header('auth-token', token).json({
     error: null,
     data: {token}
-  });
-
-  res.status(status).send(msg);
+  }).status(status);
 })
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`);

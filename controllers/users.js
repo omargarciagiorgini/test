@@ -20,7 +20,7 @@ exports.login =  async(userName, pass) => {
             id: userID
         }, process.env.TOKEN_SECRET)
         
-        return [200,res?"logged":"user or pass incorrect", token];
+        return [200, res?token:"user or pass incorrect"];
     } catch (error) {
         console.log('login error controller',error);
         return [500,'Error: {$error}'+error];
