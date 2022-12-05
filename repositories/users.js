@@ -1,11 +1,19 @@
 const  models = require('../db/models/index');
 const bcrypt = require('bcrypt');
 const { Op } = require("sequelize");
-
+const Redis = require("ioredis");
 
 exports.getAllUsers = async (req) => {
+    const redis = new Redis(process.env.REDIS_URL);
+
     try {
         const { query } = req;
+        const res = await redis.get(JSON.stringify(query), (err, result) => {
+            if (err) {
+              console.error('redis get error: ',err);
+            } 
+          });
+        if(res!=null) return res;
         const opt = [];
         Object.entries(query).forEach(([key, value]) => {
             opt.push({[key]:value} );          
@@ -13,6 +21,10 @@ exports.getAllUsers = async (req) => {
         const users = await models.User.findAll({
             attributes: {exclude: ['password']},order: [['id','DESC']],
             where:{ [Op.or]: opt}});
+            console.log('users: ',users.length);
+        if(users.length !== 0)
+            redis.set(JSON.stringify(query), JSON.stringify(users , null ,2),'ex',3600);
+
         return JSON.stringify(users, null, 2);
         
     } catch (error) {
