@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/users', verifyToken, validateGetUsers);
 app.get('/users', async (req, res) => {
     const users = await  UsersController.getAll(req);
-    res.send(200,users);
+    res.status(200).send(users);
   })
 
 app.post('/register', async (req, res) => {
