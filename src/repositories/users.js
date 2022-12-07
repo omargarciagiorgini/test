@@ -21,7 +21,6 @@ exports.getAllUsers = async (req) => {
         const users = await models.User.findAll({
             attributes: {exclude: ['password']},order: [['id','DESC']],
             where:{ [Op.or]: opt}});
-            console.log('users: ',users.length);
         if(users.length !== 0)
             redis.set(JSON.stringify(query), JSON.stringify(users , null ,2),'ex',3600);
 
@@ -67,4 +66,14 @@ exports.getUserIDByUserName= async (userName) => {
     const result = await models.User.findOne({ attributes: ['id'],where:{ first_name:userName}});
     console.log('getUserIDByUserName', result.dataValues.id);
     return result.dataValues.id;
+}
+
+exports.findOne = async (userName , email) => {
+    try {
+        const result = await models.User.findOne({ where:{ [Op.or]: [{first_name:userName},{email:email}]}});
+        console.log('result', result);
+        return result === null?false:true;
+    } catch (error) {
+            console.log(error);        
+    }
 }

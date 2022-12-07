@@ -7,7 +7,8 @@ exports.getAll = async (req) => {
 }
 
 exports.register = async(userName , email , pass) => {
-    return await UserRepository.register(userName , email , pass);    
+    if(await UserRepository.findOne(userName , email) === true) return 'Already in use!';
+    else { return await UserRepository.register(userName , email , pass); }   
 }
 
 exports.login =  async(userName, pass) => {
@@ -15,12 +16,12 @@ exports.login =  async(userName, pass) => {
         const userID = await UserRepository.getUserIDByUserName(userName);
         const res = await UserRepository.verifyPassword(userID, pass);
             // create token
-        const token = jwt.sign({
+        const token = (userID && res )?jwt.sign({
             name: userName,
             id: userID
-        }, process.env.TOKEN_SECRET)
+        }, process.env.TOKEN_SECRET):"user or pass incorrect";
         
-        return [200, res?token:"user or pass incorrect"];
+        return [200, token];
     } catch (error) {
         console.log('login error controller',error);
         return [500,'Error: {$error}'+error];
