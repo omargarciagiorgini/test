@@ -32,19 +32,20 @@ exports.getAllUsers = async (req) => {
 }
 
 exports.register = async (userName , email , pass) => {
-    const saltRounds = 10
-
-    const encryptedPass = await bcrypt.hash(pass, saltRounds);
-    const newUser = { first_name : userName,
-                        email: email,
-                        password: encryptedPass
-                    }
-    models.User.create(newUser).then(function(newUser){
-        console.log(newUser.name); // John
-        // John is now in your db!
-    }).catch(function(error){
-            console.log('Error al intentar guardar un nuevo usuario: ', error);
-    });
+    try {
+        const saltRounds = 10
+        const encryptedPass = await bcrypt.hash(pass, saltRounds);
+        const newUser = {   first_name : userName,
+                            email: email,
+                            password: encryptedPass
+                        }
+        await models.User.create(newUser);
+        const clone = Object.assign({}, { ...newUser });
+        delete clone.password;
+        return clone;
+    } catch (error) {
+        console.log('Error al intentar guardar un nuevo usuario: ', error);
+    }
 }
 
 exports.verifyPassword = async(userID, pass) => {
