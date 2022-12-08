@@ -21,12 +21,10 @@ exports.login =  async(userName, pass) => {
         const userID = await UserRepository.getUserIDByUserName(userName);
         const res = await UserRepository.verifyPassword(userID, pass);
             // create token
-        const token = (userID && res )?jwt.sign({
+        return (userID && res )?[200,jwt.sign({
             name: userName,
             id: userID
-        }, process.env.TOKEN_SECRET):"user or pass incorrect";
-        
-        return [200, token];
+        }, process.env.TOKEN_SECRET)]:[401,"user or pass incorrect"];
     } catch (error) {
         console.log('login error controller',error);
         return [500,'Error: {$error}'+error];

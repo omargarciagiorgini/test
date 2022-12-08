@@ -32,10 +32,7 @@ app.post('/register', validationMiddleware.validatePostRegister,  async (req, re
 
 app.post('/login', validationMiddleware.validatePostLogin, async(req, res) => {
   const [status , token] = await UsersController.login(req.body.user_name, req.body.pass).catch((e)=> console.log(e));
-  res.header('auth-token', token).json({
-    error: null,
-    data: {token}
-  }).status(status);
+  res.header('auth-token', token).status(status).json({token});
 })
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
