@@ -45,6 +45,7 @@ exports.register = async (userName , email , pass) => {
         return clone;
     } catch (error) {
         console.log('Error al intentar guardar un nuevo usuario: ', error);
+        return error;
     }
 }
 
@@ -54,7 +55,6 @@ exports.verifyPassword = async(userID, pass) => {
             attributes: ['password'],
             where: { id: userID },
           });
-          console.log('storedHash',storedHash.dataValues.password);
         const result = await bcrypt.compare(pass, storedHash.dataValues.password);
         return result;
     } catch (error) {
@@ -64,15 +64,18 @@ exports.verifyPassword = async(userID, pass) => {
 }
 
 exports.getUserIDByUserName= async (userName) => {
-    const result = await models.User.findOne({ attributes: ['id'],where:{ first_name:userName}});
-    console.log('getUserIDByUserName', result.dataValues.id);
-    return result.dataValues.id;
+    try {
+        const result = await models.User.findOne({ attributes: ['id'],where:{ first_name:userName}});
+        return result.dataValues.id;
+    } catch (error) {
+        console.log('Error at getUserIDByUserName in UserRepo:', error);
+        return error;        
+    }
 }
 
 exports.findOne = async (userName , email) => {
     try {
         const result = await models.User.findOne({ where:{ [Op.or]: [{first_name:userName},{email:email}]}});
-        console.log('result', result);
         return result === null?false:true;
     } catch (error) {
             console.log(error);        

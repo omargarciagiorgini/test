@@ -26,7 +26,7 @@ app.post('/register', validationMiddleware.validatePostRegister,  async (req, re
     res.status(200).json({data});
   } catch (error) {
     console.log(error);
-    res.status(500).send(error)
+    res.status(500).json({error})
   }
 })
 
@@ -40,3 +40,5 @@ app.post('/login', validationMiddleware.validatePostLogin, async(req, res) => {
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
 }); 
+
+module.exports = app;

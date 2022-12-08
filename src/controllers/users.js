@@ -6,9 +6,14 @@ exports.getAll = async (req) => {
     return await UserRepository.getAllUsers(req);
 }
 
-exports.register = async(userName , email , pass) => {
-    if(await UserRepository.findOne(userName , email) === true) return 'Already in use!';
-    else { return await UserRepository.register(userName , email , pass); }   
+exports.register = async(userName , email , pass) => { 
+    try {
+        if(await UserRepository.findOne(userName , email) === true) return 'Already in use!';
+        else { return await UserRepository.register(userName , email , pass); }   
+    } catch (error) {
+        console.log(error);
+        return error        
+    }
 }
 
 exports.login =  async(userName, pass) => {

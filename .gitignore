@@ -4,6 +4,10 @@
 # Ignora la carpeta node_modules
 node_modules
 package-lock.json
+
+# Ignora la carpeta  coverage, usada para testear
+coverage
+
 # Ignora todos los archivos de texto
 *.txt
 

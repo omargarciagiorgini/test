@@ -4,11 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "start": "nodemon ./src/index.js"
+    "test": " jest --testTimeout=10000",
+    "pretest": "npm run db:reset",
+    "db:create:test": "cd src/db && npx sequelize-cli --env test db:create",
+    "start": "nodemon ./src/index.js",
+    "db:reset": "cd src/db && npx sequelize-cli  --env test db:drop && npx sequelize-cli  --env test db:create && npx sequelize-cli  --env test db:migrate && npx sequelize-cli  --env test db:seed:all"
   },
   "jest": {
-    "collectCoverage":true
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +37,7 @@
   },
   "devDependencies": {
     "faker": "^5.5.3",
-    "sequelize-cli": "^6.5.2"
+    "sequelize-cli": "^6.5.2",
+    "supertest": "^6.3.2"
   }
 }
